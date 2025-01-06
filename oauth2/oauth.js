@@ -136,6 +136,26 @@ app.get('/success', (req, res) => {
   res.send('Authentication successful! You can now access your QuickBooks data.');
 });
 
+// Disconnect route
+app.get('/disconnect', function (req, res) {
+  // Destroy session (i.e., log out the user)
+  req.session.destroy(function (err) {
+    if (err) {
+      console.error('Error clearing session:', err);
+      res.status(500).send('Error during disconnect');
+      return;
+    }
+
+    // Notify the client that they are disconnected (could redirect or reload)
+res.send(`
+  <!DOCTYPE html><html><head></head><body>
+      <h1>You have been successfully disconnected from QuickBooks.</h1>
+      <script>window.opener.location.reload();window.close();</script></body></html>
+`);
+  });
+});
+
+
 // Export the QuickBooks instance and Realm ID
 module.exports = {
   getQboInstance: () => qbo,
