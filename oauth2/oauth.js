@@ -2,17 +2,9 @@
 const dotenv = require('dotenv');
 dotenv.config({ path: 'C:/Users/rmisu/OneDrive/Desktop/api/paymentApp/.env' });
 
-
 const consumerKey = process.env.consumerKey;
 const consumerSecret = process.env.consumerSecret;
 
-//console.log('Consumer Key:', consumerKey);
-//console.log('Consumer Secret:', consumerSecret);
-//console.log('PORT ', process.env.PORT);
-
-
-
-// Required modules
 var http = require('http');
 var port = process.env.PORT || 3000;
 var request = require('request');
@@ -33,7 +25,6 @@ QuickBooks.setOauthVersion('2.0');
 // Generic Express config
 app.set('port', port);
 app.set('views', path.join(__dirname, 'views'));
-//app.set('views', 'views');
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser('brad'));
@@ -42,12 +33,6 @@ app.use(session({ resave: false, saveUninitialized: false, secret: 'smith' }));
 app.listen(app.get('port'), function () {
   console.log('Express server listening on port ' + app.get('port'));
 });
-
-
-//var consumerKey = 'ABHA5tFBMs2mTS4mceqGW5D9qKqRNJ2Cg9FEwvjwnlgxEouII5';
-//var consumerSecret = '8huVQ5nnz2XHKfQByAePqItUKZlM24wf5f1Gg2Pe';
-//console.log('consumer key ', consumerKey);
-//console.log('consumerSecret ', consumerSecret);
 
 // Variables
 let accessToken = null; 
@@ -116,7 +101,6 @@ app.get('/callback', function (req, res) {
       return;
     }
 
-    //console.log('Response Body:', body); // Log the response for debugging
     const parsedToken = JSON.parse(body);
 
     if (!parsedToken.access_token) {
@@ -142,8 +126,14 @@ app.get('/callback', function (req, res) {
     );
 
     console.log('QuickBooks instance initialized');
-    res.send('<!DOCTYPE html><html><head></head><body><script>window.opener.location.reload(); window.close();</script></body></html>');
+    res.redirect('/success');  // Redirect user to the launch URL (success page)
   });
+});
+
+// ** Launch URL ** - Success page after OAuth authentication
+app.get('/success', (req, res) => {
+  // You can customize this message, showing a success page, or other relevant details.
+  res.send('Authentication successful! You can now access your QuickBooks data.');
 });
 
 // Export the QuickBooks instance and Realm ID
